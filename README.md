@@ -3,15 +3,15 @@
 <!-- badges: start -->
 
 
-[![Travis build status](https://travis-ci.com/happycabbage/projinit.svg?branch=master)](https://travis-ci.com/happycabbage/projinit)
-[![Codecov test coverage](https://codecov.io/gh/happycabbage/projinit/branch/master/graph/badge.svg)](https://codecov.io/gh/happycabbage/projinit?branch=master)
+[![Travis build status](https://travis-ci.com/happycabbage/smstools.svg?branch=master)](https://travis-ci.com/happycabbage/smstools)
+[![Codecov test coverage](https://codecov.io/gh/happycabbage/smstools/branch/master/graph/badge.svg)](https://codecov.io/gh/happycabbage/smstools?branch=master)
 <!-- badges: end -->
 
 
 ### Internal Only
 
 ``` r
-library(projinit)
+library(smstools)
 
 ```
 
