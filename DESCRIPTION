@@ -1,13 +1,12 @@
-Package: projinit
-Title: Templates and Tools
+Package: smstools
+Title: Local & API Hosted SMS Tools
 Version: 0.0.5
 Authors@R: 
     person(given = "HAPPY",
            family = "CABBAGE",
            role = c("aut", "cre"),
            email = "no-reply@happycabbage.io")
-Description: R package containing internal project templates and 
- additional tools useful for initializing with tools needed for project dev.
+Description: Twilio Client Functions, Wrappers, and Other SMS related tools for local and API hosted access.
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -21,5 +20,3 @@ Suggests:
     testthat
 Remotes:
     happycabbage/apitools
-URL: https://github.com/happycabbage/projinit
-BugReports: https://github.com/happycabbage/projinit/issues
