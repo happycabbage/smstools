@@ -1,4 +1,4 @@
-# projinit <img src='man/figures/logo.png' align="right" height="52" />
+# smstools <img src='man/figures/logo.png' align="right" height="52" />
 
 <!-- badges: start -->
 
