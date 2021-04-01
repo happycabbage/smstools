@@ -1,3 +1,75 @@
+
+# Get the phone numbers associated with a messaging service ---------------------------------
+getTwilioMessagingNums <- function(ms, sid, token) {
+  print(ms)
+  print(sid)
+  print(token)
+  url <- paste0("https://messaging.twilio.com/v1/Services/", ms,"/PhoneNumbers")
+  authentication <- authenticate(sid, token)
+  response <- GET(url, config = authentication)
+  status <- http_status(response)
+  print(status$message)
+  responseContent <- jsonlite::fromJSON(content(response, 'text'))
+  numbers <- responseContent$phone_numbers$phone_number
+  return(numbers)
+}
+
+# Get all text message for a certain criteria ---------------------------------
+getTwilioMessages <- function(date = NULL, from = NULL, to = NULL, sid, token) {
+  url <- paste0("https://api.twilio.com/2010-04-01/Accounts/", sid,"/Messages.json")
+  authentication <- authenticate(sid, token)
+  response <- GET(url, config = authentication, query = list(DateSent = date, To = to, From = from))
+  status <- http_status(response)
+  print(status$message)
+  responseContent <- jsonlite::fromJSON(content(response, 'text'))
+  messages <- responseContent$messages
+  messages$subresource_uris <- NULL
+  if(length(messages > 0)) {
+    output <- messages %>%
+      mutate(
+          date_created = dmy_hms(date_created)
+        , date_updated = dmy_hms(date_updated)
+        , date_sent    = dmy_hms(date_sent)
+      ) %>%
+      select(
+        sid
+        , date_created
+        , date_updated
+        , date_sent
+        , to
+        , from
+        , body
+        , status
+        , num_segments
+        , num_media
+        , price
+      )
+  } else {
+    output <- NULL
+  }
+
+  return(output)
+}
+
+# Send a text message via a messaging service ---------------------------------
+sendTwilioMessagingService <- function(to, message, mediaUrl = NA, ms, sid, token) {
+  url <- paste0("https://api.twilio.com/2010-04-01/Accounts/", sid,"/Messages.json")
+  body <- list(
+      MessagingServiceSid = ms
+    , To = to
+    , Body = message
+  )
+
+  if (!is.na(mediaUrl)) {
+    body <- c(body, MediaUrl = mediaUrl)
+  }
+
+  authentication <- authenticate(sid, token)
+  response <- POST(url, config = authentication, body = body)
+  return(response)
+}
+
+
 #this buys a single number
 buyTwilioNumber<- function(accountSid, apikey, area_code) {
   #prepare body for POST req
