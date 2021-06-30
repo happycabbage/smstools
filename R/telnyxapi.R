@@ -116,6 +116,7 @@ tl_get_messages <- function(
     v1_token,
     v1_user
   )
+  httr::stop_for_status(r)
 
   # Retry it until its done
   id <- httr::content(r, encoding = 'UTF-8')[['id']]
@@ -136,12 +137,14 @@ tl_get_messages <- function(
       v1_token,
       v1_user
     )
+    httr::stop_for_status(r_status)
     status <- httr::content(r_status, encoding = 'UTF-8')
     slp <- 1
   }
 
   # Download report and parse dataframe
   r_report <- httr::GET(status[['report_url']], httr::write_memory())
+  httr::stop_for_status(r_report)
   txt <- httr::content(r_report, as = 'text', encoding = 'UTF-8')
   txt <- stringr::str_replace_all(txt, ',\\"\\{', ",\\'{") # clean up quoting problem
   txt <- stringr::str_replace_all(txt, '\\}\\"\n', "\\}\\'\n")
@@ -563,7 +566,6 @@ tl_setup_msg_profile <- function(
     httr::content_type_json()
   )
   resp <- do.call(fun, args)
-  httr::stop_for_status(resp)
   return(resp)
 }
 
@@ -585,7 +587,6 @@ tl_setup_msg_profile <- function(
     ),
     httr::content_type_json()
   )
-  httr::stop_for_status(resp)
   return(resp)
 }
 
@@ -602,7 +603,6 @@ tl_setup_msg_profile <- function(
     ),
     ...
   )
-  httr::stop_for_status(resp)
   return(resp)
 }
 
@@ -620,7 +620,6 @@ tl_setup_msg_profile <- function(
     ...
   )
   resp <- do.call(fun, args)
-  httr::stop_for_status(resp)
   return(resp)
 }
 
