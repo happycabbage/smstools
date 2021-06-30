@@ -1,6 +1,6 @@
 Package: smstools
 Title: Local & API Hosted SMS Tools
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "HAPPY",
            family = "CABBAGE",
