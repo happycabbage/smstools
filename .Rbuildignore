@@ -4,3 +4,4 @@
 ^_old$
 ^\.travis\.yml$
 ^codecov\.yml$
+^R/_old$

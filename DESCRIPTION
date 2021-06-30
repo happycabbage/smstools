@@ -1,17 +1,23 @@
 Package: smstools
 Title: Local & API Hosted SMS Tools
-Version: 0.0.5
+Version: 0.1.0
 Authors@R: 
     person(given = "HAPPY",
            family = "CABBAGE",
            role = c("aut", "cre"),
            email = "no-reply@happycabbage.io")
-Description: Twilio Client Functions, Wrappers, and Other SMS related tools for local and API hosted access.
+Description: API Client Functions, Wrappers, and Other SMS related tools for local and API hosted access.
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
-    httr
+    data.table,
+    httr,
+    jsonlite,
+    lubridate,
+    purrr,
+    rlang,
+    stringr
 Depends: 
     R (>= 4.0)
