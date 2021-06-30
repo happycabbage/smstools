@@ -22,8 +22,4 @@ Admin: kat@happycabbage.io
 Author: bobby@happycabbage.io 
 Maintainer: andrew@happycabbage.io
 
-
-
-**Proprietary - Do Not Distribute**
-
 **Happy Cabbage Analytics Inc. - All rights reserved**
