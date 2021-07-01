@@ -47,8 +47,6 @@ tl_send_text <- function(
 #' @param key Telnyx API key
 #' @param params optional further params to pass into the API call. Should be a named list.
 #'
-#' @importFrom data.table fread
-#'
 #' @export
 tl_send_msg_profile <- function(
   to,
@@ -83,6 +81,14 @@ tl_send_msg_profile <- function(
 #' @param v1_token Telnyx API v1 Token
 #' @param v1_user Telnyx API v1 user, either an email or the preferred masked API user id.
 #' @param params optional further arguments to pass into API query. Should be a named list.
+#' @param incl_msg_body should the report include the text of the message?
+#'    Note that MMS have invalid JSON mixed with CSV problems. It's recommended you use \code{tl_get_raw_messages}
+#'    Which will make subsequent calls to the message endpoint to get a JSON list.
+#'    When using \code{tl_get_raw_messages} set this to \code{FALSE} to save yourself a headache.
+#'
+#' @importFrom data.table fread
+#'
+#' @name tl_get_messages
 #'
 #' @export
 tl_get_messages <- function(
@@ -92,14 +98,15 @@ tl_get_messages <- function(
   verbose     = FALSE,
   v1_token,
   v1_user,
-  params = NULL
+  params = NULL,
+  incl_msg_body = TRUE
 ) {
 
   body <- list(
     connections          = list(),
     directions           = list(),
     record_types         = list(),
-    include_message_body = TRUE,
+    include_message_body = incl_msg_body,
     start_time           = format(lubridate::with_tz(start_time, 'UTC'), '%Y-%m-%dT%H:%M:%S+00:00'),
     timezone             = 'UTC',
     profiles             = as.list(profile_ids)
@@ -151,6 +158,40 @@ tl_get_messages <- function(
   dt <- fread(txt, quote = "'")
 
   return(dt)
+}
+
+#' @rdname tl_get_messages
+#' @export
+tl_get_raw_messages <- function(key, ...){
+  df <- tl_get_messages(...)
+  ids <- unique(df[['Unique Mdr ID']])
+  if(verbose){
+    print(stringr::str_glue("Report retrieved, querying details for {length(ids)} messages..."))
+  }
+  res <- purrr::map(ids, function(i){
+    ..tl_getv2(ep = stringr::str_glue('messages/{i}'), key)
+  })
+  cnt <- purrr::map_chr(res, httr::content, as = 'text', encoding = 'UTF-8')
+  return(cnt)
+}
+
+#' @rdname tl_get_messages
+#'
+#' @import magrittr
+#'
+#' @export
+tl_extract_raw_messages <- function(js){
+  jsons <- purrr::map(js, jsonlite::fromJSON, simplifyDataFrame = F, simplifyVector = F)
+  jsons <- purrr::map(jsons, `[[`, 'data')
+  df <- tibble::tibble(list = jsons) %>%
+    tidyr::unnest_wider("list") %>%
+    tidyr::unnest_wider("to", names_sep = '_') %>%
+    tidyr::unnest_wider("to_1", names_sep = '_') %>%
+    tidyr::unnest_wider("from", names_sep = '_') %>%
+    tidyr::unnest_wider("cost", names_sep = '_') %>%
+    tidyr::unnest_wider("media", names_sep = '_') %>%
+    tidyr::unnest_wider("media_1", names_sep = '_')
+  return(df)
 }
 
 
