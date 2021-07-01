@@ -85,6 +85,9 @@ tl_send_msg_profile <- function(
 #'    Note that MMS have invalid JSON mixed with CSV problems. It's recommended you use \code{tl_get_raw_messages}
 #'    Which will make subsequent calls to the message endpoint to get a JSON list.
 #'    When using \code{tl_get_raw_messages} set this to \code{FALSE} to save yourself a headache.
+#' @param key API v2 Key
+#' @param ... Downstream params
+#' @param js Output of \code{tl_get_raw_messages} to pass into \code{tl_extract_raw_messages}
 #'
 #' @importFrom data.table fread
 #'
@@ -162,8 +165,8 @@ tl_get_messages <- function(
 
 #' @rdname tl_get_messages
 #' @export
-tl_get_raw_messages <- function(key, ...){
-  df <- tl_get_messages(...)
+tl_get_raw_messages <- function(key, verbose, ...){
+  df <- tl_get_messages(verbose = verbose, ...)
   ids <- unique(df[['Unique Mdr ID']])
   if(verbose){
     print(stringr::str_glue("Report retrieved, querying details for {length(ids)} messages..."))

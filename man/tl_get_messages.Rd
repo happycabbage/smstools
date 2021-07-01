@@ -2,6 +2,8 @@
 % Please edit documentation in R/telnyxapi.R
 \name{tl_get_messages}
 \alias{tl_get_messages}
+\alias{tl_get_raw_messages}
+\alias{tl_extract_raw_messages}
 \title{Get SMS messages.}
 \usage{
 tl_get_messages(
@@ -11,8 +13,13 @@ tl_get_messages(
   verbose = FALSE,
   v1_token,
   v1_user,
-  params = NULL
+  params = NULL,
+  incl_msg_body = TRUE
 )
+
+tl_get_raw_messages(key, verbose, ...)
+
+tl_extract_raw_messages(js)
 }
 \arguments{
 \item{start_time}{start time of report. Required. Must include the timezone.}
@@ -28,6 +35,17 @@ tl_get_messages(
 \item{v1_user}{Telnyx API v1 user, either an email or the preferred masked API user id.}
 
 \item{params}{optional further arguments to pass into API query. Should be a named list.}
+
+\item{incl_msg_body}{should the report include the text of the message?
+Note that MMS have invalid JSON mixed with CSV problems. It's recommended you use \code{tl_get_raw_messages}
+Which will make subsequent calls to the message endpoint to get a JSON list.
+When using \code{tl_get_raw_messages} set this to \code{FALSE} to save yourself a headache.}
+
+\item{key}{API v2 Key}
+
+\item{...}{Downstream params}
+
+\item{js}{Output of \code{tl_get_raw_messages} to pass into \code{tl_extract_raw_messages}}
 }
 \description{
 Get SMS messages from the MDR reports endpoint.
