@@ -85,6 +85,7 @@ tl_send_msg_profile <- function(
 #'    Note that MMS have invalid JSON mixed with CSV problems. It's recommended you use \code{tl_get_raw_messages}
 #'    Which will make subsequent calls to the message endpoint to get a JSON list.
 #'    When using \code{tl_get_raw_messages} set this to \code{FALSE} to save yourself a headache.
+#' @param directions Should be list() object. Allowed values are 'inbound' and 'outbound'
 #' @param key API v2 Key
 #' @param ... Downstream params
 #' @param js Output of \code{tl_get_raw_messages} to pass into \code{tl_extract_raw_messages}
@@ -102,12 +103,13 @@ tl_get_messages <- function(
   v1_token,
   v1_user,
   params = NULL,
-  incl_msg_body = TRUE
+  incl_msg_body = TRUE,
+  directions = list()
 ) {
 
   body <- list(
     connections          = list(),
-    directions           = list(),
+    directions           = directions,
     record_types         = list(),
     include_message_body = incl_msg_body,
     start_time           = format(lubridate::with_tz(start_time, 'UTC'), '%Y-%m-%dT%H:%M:%S+00:00'),
@@ -194,6 +196,17 @@ tl_extract_raw_messages <- function(js){
     tidyr::unnest_wider("cost", names_sep = '_') %>%
     tidyr::unnest_wider("media", names_sep = '_') %>%
     tidyr::unnest_wider("media_1", names_sep = '_')
+
+  if("errors" %in% names(df)) {
+    df <- df %>%
+      tidyr::unnest_wider("errors", names_sep = "_") %>%
+      tidyr::unnest_wider("errors_1", names_sep = "_") %>%
+      tidyr::unnest_wider("errors_1_meta", names_sep = "_")
+  }
+
+  df <- df %>%
+    dplyr::mutate_if(is.list, ~purrr::map_chr(., jsonlite::toJSON, force = T))
+
   return(df)
 }
 

@@ -14,7 +14,8 @@ tl_get_messages(
   v1_token,
   v1_user,
   params = NULL,
-  incl_msg_body = TRUE
+  incl_msg_body = TRUE,
+  directions = list()
 )
 
 tl_get_raw_messages(key, verbose, ...)
@@ -40,6 +41,8 @@ tl_extract_raw_messages(js)
 Note that MMS have invalid JSON mixed with CSV problems. It's recommended you use \code{tl_get_raw_messages}
 Which will make subsequent calls to the message endpoint to get a JSON list.
 When using \code{tl_get_raw_messages} set this to \code{FALSE} to save yourself a headache.}
+
+\item{directions}{Should be list() object. Allowed values are 'inbound' and 'outbound'}
 
 \item{key}{API v2 Key}
 
