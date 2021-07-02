@@ -66,6 +66,60 @@ tl_send_msg_profile <- function(
   return(r)
 }
 
+#' #' @title Get SMS messages via MDR beta endpoint
+#' #'
+#' #' @description
+#' #' Get SMS messages from the MDR search endpoint.
+#' #'
+#' #' See \href{https://developers.telnyx.com/docs/api/v2/messaging/MDR-Search-Beta}{here} for more details.
+#' #'
+#' #' @param start_time start time of report. Required. Must include the timezone.
+#' #' @param end_time end time for end of report. Required. Must include the timezone.
+#' #' @param key Required. API v2 Key
+#' #' @param profile_id optional. Messaging profile.
+#' #' @param params. More params to pass down.
+#' #'
+#' #' @export
+#' tel_getv2_messages <- function(
+#'   start_time,
+#'   end_time,
+#'   key,
+#'   profile_id = NULL,
+#'   params     = NULL
+#' ){
+#'
+#'   # Prepare Query
+#'   qry <- list(
+#'     'start_date' = format(lubridate::with_tz(start_time, 'UTC'), '%Y-%m-%dT%H:%M:%S+00:00'),
+#'     'end_date'   = format(lubridate::with_tz(end_time, 'UTC'), '%Y-%m-%dT%H:%M:%S+00:00')
+#'   )
+#'   if(!is.null(profile_id)){
+#'     qry[['outbound_profile_id']] = profile_id
+#'   }
+#'   qry <- c(qry, params)
+#'   results <- list()
+#'   curr_pg <- 5
+#'   tot_pg <- 10
+#'   while(curr_pg < tot_pg){
+#'     pgs <- list(
+#'       "page[number]" = curr_pg + 1,
+#'       "page[size]"   = 25
+#'     )
+#'     r <- ..tl_getv2(
+#'       ep     = stringr::str_glue('message_detail_records'),
+#'       apikey = key,
+#'       query = c(qry, pgs)
+#'     )
+#'     print(httr::content(r))
+#'     httr::stop_for_status(r, stringr::str_glue("Paginating, at page {curr_pg +1} out of {tot_pg}"))
+#'     res <- httr::content(r, 'parsed', encoding = 'UTF-8')
+#'     results <- c(results, list(results))
+#'     curr_pg <- res[['meta']][['page_number']]
+#'     tot_pg <- res[['meta']][['total_pages']]
+#'   }
+#'   return(results)
+#' }
+
 #' @title Get SMS messages.
 #'
 #' @description
@@ -193,9 +247,13 @@ tl_extract_raw_messages <- function(js){
     tidyr::unnest_wider("to", names_sep = '_') %>%
     tidyr::unnest_wider("to_1", names_sep = '_') %>%
     tidyr::unnest_wider("from", names_sep = '_') %>%
-    tidyr::unnest_wider("cost", names_sep = '_') %>%
-    tidyr::unnest_wider("media", names_sep = '_') %>%
-    tidyr::unnest_wider("media_1", names_sep = '_')
+    tidyr::unnest_wider("cost", names_sep = '_')
+
+  if("media" %in% names(df)) {
+    df <- df %>%
+      tidyr::unnest_wider("media", names_sep = '_') %>%
+      tidyr::unnest_wider("media_1", names_sep = '_')
+  }
 
   if("errors" %in% names(df)) {
     df <- df %>%
