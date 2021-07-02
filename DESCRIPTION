@@ -13,11 +13,15 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
     data.table,
+    dplyr,
     httr,
     jsonlite,
     lubridate,
+    magrittr,
     purrr,
     rlang,
-    stringr
+    stringr,
+    tibble,
+    tidyr
 Depends: 
     R (>= 3.6)
