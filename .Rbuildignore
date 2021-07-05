@@ -5,3 +5,4 @@
 ^\.travis\.yml$
 ^codecov\.yml$
 ^R/_old$
+^\.github$

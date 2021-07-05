@@ -1,9 +1,8 @@
 # smstools <img src='man/figures/logo.png' align="right" height="52" />
 
 <!-- badges: start -->
-
-
-[![Travis build status](https://travis-ci.com/happycabbage/smstools.svg?branch=master)](https://travis-ci.com/happycabbage/smstools)
+[![R-CMD-check](https://github.com/happycabbage/smstools/workflows/R-CMD-check/badge.svg)](https://github.com/happycabbage/smstools/actions)
+[![test-coverage](https://github.com/happycabbage/smstools/workflows/test-coverage/badge.svg)](https://github.com/happycabbage/smstools/actions)
 [![Codecov test coverage](https://codecov.io/gh/happycabbage/smstools/branch/master/graph/badge.svg)](https://codecov.io/gh/happycabbage/smstools?branch=master)
 <!-- badges: end -->
 
